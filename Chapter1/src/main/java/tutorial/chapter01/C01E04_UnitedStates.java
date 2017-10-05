@@ -67,14 +67,9 @@ public class C01E04_UnitedStates {
 
     public void process(Table table, String line, PdfFont font, boolean isHeader) {
         StringTokenizer tokenizer = new StringTokenizer(line, ";");
-        Consumer<Cell> block = cell -> {
-            if (isHeader) {
-                table.addHeaderCell(cell);
-            } else {
-                table.addCell(cell);
-            }
-        };
-            
+        Consumer<Cell> block = (isHeader)
+            ? cell -> table.addHeaderCell(cell)
+            : cell -> table.addCell(cell);
         while (tokenizer.hasMoreTokens()) {
             block.accept(new Cell().add(new Paragraph(tokenizer.nextToken()).setFont(font)));
         }
