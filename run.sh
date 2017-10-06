@@ -8,7 +8,7 @@ fi
 cd "$DIR"
 "$SCRIPTDIR/clean.sh" &&
     mvn -e package &&
-    JAR=`echo target/Chapter*.jar` &&
+    JAR=`echo target/jump*.jar` &&
     for i in $(jar tf "$JAR" | sed "$REGEX"); do
         echo "$i" is running
         java -cp "$JAR" "$i"

@@ -2,13 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>tutorial.chapter04</groupId>
-  <artifactId>Chapter4</artifactId>
+  <groupId>tutorial</groupId>
+  <artifactId>jump-start</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Chapter4</name>
-  <url>http://maven.apache.org</url>
+  <name>iText7: Jump-Start Tutorial</name>
+  <url>https://github.com/LeeiFrankJaw/iText7-jump-start</url>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
