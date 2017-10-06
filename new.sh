@@ -11,4 +11,6 @@ mvn archetype:generate \
     
     cp Chapter2/pom.xml "Chapter$1"/ &&
 
+    cp Chapter3/prj.el "Chapter$1"/ &&
+
     sed -i -r "s/([Cc]hapter0?)2/\1$1/g" "Chapter$1"/pom.xml
