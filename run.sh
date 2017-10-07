@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 SCRIPTDIR="$(dirname "`realpath "$0"`")"
 DIR=.
-REGEX='/tutorial.*\.class/!d; /\$/d; s/\//./g; s/\.class$//'
+REGEX='/tutorial.*\.class/!d; /\$/d; /Fonts\.class$/d; s/\//./g; s/\.class$//'
 if [ -n "$1" ]; then
     DIR="$1"
 fi
