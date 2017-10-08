@@ -7,6 +7,7 @@ import com.itextpdf.kernel.pdf.PdfDocumentInfo;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfName;
 import com.itextpdf.kernel.pdf.PdfDictionary;
+import com.itextpdf.kernel.pdf.PdfArray;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +58,8 @@ public class Exercise {
 
         PdfDictionary infoDict = docInfo.getPdfObject();
         PdfName[] keys = {PdfName.Subject, PdfName.Keywords,
-                          PdfName.Creator, PdfName.Producer};
+                          PdfName.Creator, PdfName.Producer,
+                          new PdfName("www.it-ebooks.info")};
 
         for (PdfName key : keys) {
             infoDict.remove(key);
@@ -73,10 +75,30 @@ public class Exercise {
 
         int n = pdfDoc.getNumberOfPages();
 
+        // PdfDictionary pageDict = (PdfDictionary) pdfDoc.getPdfObject(2873);
+        // int num = pdfDoc.getPageNumber(pageDict);
+        // System.out.println(num);
+
         for (int i = 1; i <= n; i++) {
+            // System.out.println(i);
+
             PdfPage page = pdfDoc.getPage(i);
+            PdfDictionary pageDict = page.getPdfObject();
+
             int m = page.getContentStreamCount();
-            page.getPdfObject().getAsArray(PdfName.Contents).remove(m-1);
+            pageDict.getAsArray(PdfName.Contents).remove(m - 1);
+
+            PdfArray arr = pageDict.getAsArray(PdfName.Annots);
+            int arrSize = arr.size();
+            // System.out.println(arrSize);
+
+            if (arrSize > 1 && arr.isIndirect()) {
+                arr.remove(arrSize - 1);
+                // System.out.println("Indirect and more than one");
+            } else {
+                pageDict.remove(PdfName.Annots);
+                // System.out.println("Direct or exactly one");
+            }
         }
 
         pdfDoc.close();
