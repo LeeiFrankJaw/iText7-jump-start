@@ -6,6 +6,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfDocumentInfo;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfName;
+import com.itextpdf.kernel.pdf.PdfDictionary;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,13 +19,13 @@ public class Exercise {
         File file = new File(DEST);
         file.getParentFile().mkdirs();
         if (args.length > 0) {
-            new Exercise().removeWatermarkOther(args[0], DEST);
+            new Exercise().removeLastObject(args[0], DEST);
         } else {
-            new Exercise().removeWatermark(SRC, DEST);
+            new Exercise().removeFirstObject(SRC, DEST);
         }
     }
 
-    public void removeWatermark(final String src,
+    public void removeFirstObject(final String src,
                                 final String dest) throws IOException {
         PdfDocument pdfDoc = new PdfDocument(new PdfReader(src),
                                              new PdfWriter(dest));
@@ -46,13 +47,21 @@ public class Exercise {
         pdfDoc.close();
     }
 
-    public void removeWatermarkOther(final String src,
+    public void removeLastObject(final String src,
                                      final String dest) throws IOException {
         PdfDocument pdfDoc = new PdfDocument(new PdfReader(src),
                                              new PdfWriter(dest));
 
         PdfDocumentInfo docInfo = pdfDoc.getDocumentInfo();
         String version = pdfDoc.getPdfVersion().toPdfName().getValue();
+
+        PdfDictionary infoDict = docInfo.getPdfObject();
+        PdfName[] keys = {PdfName.Subject, PdfName.Keywords,
+                          PdfName.Creator, PdfName.Producer};
+
+        for (PdfName key : keys) {
+            infoDict.remove(key);
+        }
 
         System.out.println("Title:\t" + docInfo.getTitle());
         System.out.println("Subject:\t" + docInfo.getSubject());
