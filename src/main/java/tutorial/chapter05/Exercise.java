@@ -8,6 +8,8 @@ import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfName;
 import com.itextpdf.kernel.pdf.PdfDictionary;
 import com.itextpdf.kernel.pdf.PdfArray;
+import com.itextpdf.kernel.pdf.PdfObject;
+import com.itextpdf.kernel.pdf.PdfStream;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,14 +22,15 @@ public class Exercise {
         File file = new File(DEST);
         file.getParentFile().mkdirs();
         if (args.length > 0) {
-            new Exercise().removeLastObject(args[0], DEST);
+            new Exercise().removeArtifacts(args[0], DEST);
+            // new Exercise().removeLastObject(args[0], DEST);
         } else {
             new Exercise().removeFirstObject(SRC, DEST);
         }
     }
 
     public void removeFirstObject(final String src,
-                                final String dest) throws IOException {
+                                  final String dest) throws IOException {
         PdfDocument pdfDoc = new PdfDocument(new PdfReader(src),
                                              new PdfWriter(dest));
 
@@ -49,7 +52,7 @@ public class Exercise {
     }
 
     public void removeLastObject(final String src,
-                                     final String dest) throws IOException {
+                                 final String dest) throws IOException {
         PdfDocument pdfDoc = new PdfDocument(new PdfReader(src),
                                              new PdfWriter(dest));
 
@@ -98,6 +101,42 @@ public class Exercise {
             } else {
                 pageDict.remove(PdfName.Annots);
                 // System.out.println("Direct or exactly one");
+            }
+        }
+
+        pdfDoc.close();
+    }
+
+    public void removeArtifacts(final String src,
+                                final String dest) throws IOException {
+        PdfDocument pdfDoc = new PdfDocument(new PdfReader(src),
+                                             new PdfWriter(dest));
+
+        for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
+            PdfPage page = pdfDoc.getPage(i);
+            PdfObject obj = page.getPdfObject().get(PdfName.Contents);
+            if (obj instanceof PdfStream) {
+                PdfStream stream = (PdfStream) obj;
+                String s = new String(stream.getBytes());
+                String[] lines = s.split("\n");
+                stream.setData(new byte[] {});
+                int j = 0;
+                while (j < lines.length
+                       && !lines[j].matches("/Artifact.*WOW.*")) {
+                    stream.setData((lines[j] + "\n").getBytes("UTF-8"), true);
+                    j++;
+                }
+                if (j < lines.length) {
+                    for (; !lines[j].matches("EMC.*"); j++) {
+                        System.out.println(lines[j]);
+                    }
+                    System.out.println(lines[j]);
+                    for (j++; j < lines.length; j++) {
+                        System.out.println(lines[j]);
+                        stream.setData((lines[j] + "\n").getBytes("UTF-8"),
+                                       true);
+                    }
+                }
             }
         }
 
