@@ -118,25 +118,8 @@ public class Exercise {
             if (obj instanceof PdfStream) {
                 PdfStream stream = (PdfStream) obj;
                 String s = new String(stream.getBytes());
-                String[] lines = s.split("\n");
-                stream.setData(new byte[] {});
-                int j = 0;
-                while (j < lines.length
-                       && !lines[j].matches("/Artifact.*WOW.*")) {
-                    stream.setData((lines[j] + "\n").getBytes("UTF-8"), true);
-                    j++;
-                }
-                if (j < lines.length) {
-                    for (; !lines[j].matches("EMC.*"); j++) {
-                        System.out.println(lines[j]);
-                    }
-                    System.out.println(lines[j]);
-                    for (j++; j < lines.length; j++) {
-                        System.out.println(lines[j]);
-                        stream.setData((lines[j] + "\n").getBytes("UTF-8"),
-                                       true);
-                    }
-                }
+                s = s.replaceAll("(?m)^/Artifact.*WOW(.|\n)*?EMC", "");
+                stream.setData(s.getBytes("UTF-8"));
             }
         }
 
