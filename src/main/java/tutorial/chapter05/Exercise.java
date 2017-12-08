@@ -22,8 +22,8 @@ public class Exercise {
         File file = new File(DEST);
         file.getParentFile().mkdirs();
         if (args.length > 0) {
-            new Exercise().removeArtifacts(args[0], DEST);
-            // new Exercise().removeLastObject(args[0], DEST);
+            // new Exercise().removeArtifacts(args[0], DEST);
+            new Exercise().removeLastObject(args[0], DEST);
         } else {
             new Exercise().removeFirstObject(SRC, DEST);
         }
